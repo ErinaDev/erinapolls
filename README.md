@@ -1,9 +1,6 @@
-
 # Paquete de encuestas de Erina
 
-Este paquete se encuentra en fase beta, por lo que no está todavía disponible en npmjs.com.
-
-# Uso
+## Uso
 
 ```js
 const voteEmbed = require("erinapolls");
