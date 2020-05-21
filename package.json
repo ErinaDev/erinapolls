@@ -1,0 +1,23 @@
+{
+  "name": "erinapolls",
+  "version": "1.0.0",
+  "description": "Una herramienta simple para crear votaciones.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "url": "https://github.com/Erina-Devs/erinapolls.git"
+  },
+  "keywords": [
+    "discord",
+    "discord.js",
+    "poll"
+  ],
+  "author": "Erina Development",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Erina-Devs/erinapolls/issues"
+  },
+  "homepage": "https://github.com/Erina-Devs/erinapolls#readme"
+}
