@@ -1,11 +1,3 @@
-<div align="center">
-  <p>
-    <a href="https://nodei.co/npm/discord.js-poll-embed
-/"><img src="https://nodei.co/npm/discord.js-poll-embed.png?downloads=true&stars=true" alt="NPM info" /></a>
-  </p>
-</div>
-
-# discord.js-poll-embed
 
 # Paquete de encuestas de Erina
 
