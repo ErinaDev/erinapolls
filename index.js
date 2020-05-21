@@ -22,18 +22,23 @@ const voteEmbed = async (
 	forceEndPollEmoji = "\u2705"
 ) => {
 	if (!message && !message.channel)
-		return message.reply("No puedo acceder a este canal.");
-	if (!title) return message.reply("Especifica el título de la encuesta.");
-	if (!options)
-		return message.reply("Especifica las opciones de la encuesta.");
+		return message.reply("no puedo acceder a este canal.");
+	if (!title) return message.reply("especifica el título de la encuesta.");
+	if (!options) {
+		options = ["Sí", "No"];
+	}
 	if (options.length < 2)
-		return message.reply("Por favor, proporciona más de dos opciones.");
+		return message.reply("por favor, proporciona más de dos opciones.");
 	if (options.length > emojiList.length)
 		return message.reply(
-			`Por favor, proporciona ${emojiList.length} o menos.`
+			`por favor, no excedas de ${emojiList.length} opciones.`
 		);
 
-	let text = `*Para votar, reacciona usando el emoji correspondiente.\nLa encuesta terminará en **${timeout} segundos**.\nEl creador de esta encuesta puede finalizar **forzadamente** reaccionando al emoji ${forceEndPollEmoji}.*\n\n`;
+	let text = `✥ Para votar, reacciona usando el emoji correspondiente.\n✥ ${
+		timeout > 0
+			? "La encuesta terminará en **" + timeout + "** segundos."
+			: "La encuesta **finalizará manualmente** según el creador de la encuesta lo decida."
+	}\n✥ El creador de esta encuesta puede finalizar **forzadamente** reaccionando al emoji ${forceEndPollEmoji}\n\n`;
 	const emojiInfo = {};
 	for (const option of options) {
 		const emoji = emojiList.splice(0, 1);
@@ -44,7 +49,10 @@ const voteEmbed = async (
 	usedEmojis.push(forceEndPollEmoji);
 
 	const poll = await message.channel.send(
-		embedBuilder(title, message.author.tag).setDescription(text)
+		embedBuilder(title, message.author)
+			.setDescription(text)
+			.setColor("7c4e55")
+			.setThumbnail(message.guild.iconURL())
 	);
 	for (const emoji of usedEmojis) await poll.react(emoji);
 
@@ -61,34 +69,26 @@ const voteEmbed = async (
 				message.author.id === user.id
 			)
 				return reactionCollector.stop();
-			if (!voterInfo.has(user.id))
-				voterInfo.set(user.id, { emoji: reaction.emoji.name });
-			const votedEmoji = voterInfo.get(user.id).emoji;
-			if (votedEmoji !== reaction.emoji.name) {
-				const lastVote = poll.reactions.get(votedEmoji);
-				lastVote.count -= 1;
-				lastVote.users.remove(user.id);
-				emojiInfo[votedEmoji].votes -= 1;
-				voterInfo.set(user.id, { emoji: reaction.emoji.name });
-			}
-			emojiInfo[reaction.emoji.name].votes += 1;
+			if (
+				reaction.emoji.name === forceEndPollEmoji &&
+				message.author.id !== user.id
+			)
+				return;
+			emojiInfo[reaction.emoji.name].votes = reaction.count - 1;
 		}
 	});
-
-	reactionCollector.on("dispose", (reaction, user) => {
-		if (usedEmojis.includes(reaction.emoji.name)) {
-			voterInfo.delete(user.id);
-			emojiInfo[reaction.emoji.name].votes -= 1;
-		}
-	});
-
+	// reactionCollector.on("dispose", (reaction, user) => {
+	// 	if (usedEmojis.includes(reaction.emoji.name)) {
+	// 		emojiInfo[reaction.emoji.name].votes -= 1;
+	// 	}
+	// });
 	reactionCollector.on("end", () => {
-		text = "*¡La encuesta ha terminado! Los resultados son:*\n\n";
+		text = "*¡La encuesta ha terminado!*\n✥ Los resultados son:\n\n";
 		for (const emoji in emojiInfo)
-			text += `\`${emojiInfo[emoji].option}\` - \`${emojiInfo[emoji].votes}\`\n\n`;
+			text += `• \`${emojiInfo[emoji].option}\` - \`${emojiInfo[emoji].votes} votos\`\n\n`;
 		poll.delete();
 		message.channel.send(
-			embedBuilder(title, message.author.tag).setDescription(text)
+			embedBuilder(title, message.author).setDescription(text)
 		);
 	});
 };
@@ -96,7 +96,10 @@ const voteEmbed = async (
 const embedBuilder = (title, author) => {
 	return new MessageEmbed()
 		.setTitle(`Encuesta - ${title}`)
-		.setFooter(`Encuesta creada por ${author}`);
+		.setFooter(
+			`Encuesta creada por ${author.tag}`,
+			author.displayAvatarURL()
+		);
 };
 
 module.exports = voteEmbed;
