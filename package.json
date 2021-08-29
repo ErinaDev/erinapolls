@@ -1,7 +1,7 @@
 {
   "name": "erinapolls",
-  "version": "1.0.9",
-  "description": "Una herramienta simple para crear votaciones.",
+  "version": "1.1.0",
+  "description": "Una herramienta simple para crear encuestas.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
