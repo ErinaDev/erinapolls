@@ -156,7 +156,7 @@ const voteEmbed = async (
 		reactionCollector.on("end", () => {
 			text = "*The survey is over!*\n✥ The results are:\n\n";
 			for (const emoji in emojiInfo)
-				text += `• \`${emojiInfo[emoji].option}\` - \`${emojiInfo[emoji].votes} votos\`\n\n`;
+				text += `• \`${emojiInfo[emoji].option}\` - \`${emojiInfo[emoji].votes} votes\`\n\n`;
 			poll.delete();
 			message.channel.send(
 				embedBuilder(title, message.author).setDescription(text)
